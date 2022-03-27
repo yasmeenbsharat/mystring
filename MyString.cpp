@@ -1,123 +1,153 @@
 #include "MyString.h"
-#include <iostream>
-using namespace std;
-
-//String length
-int MyString::lenString(const char* uarr) {
-int i = 0;
-if (uarr) {
-	while (*(uarr + i) != '\0') {
-		i++; }
-	return i; }
-else return 0; }
 
 // Default constructor
-MyString::MyString(const char* uarr ) {
-cout << "inside Default constructor " << endl;
-arr = CopyMyString(arr, uarr);}
+MyString::MyString(const char* uarr) {
+	while (*(uarr + m_length) != '\0')
+		m_length++;
+	m_buffer = copyMyString(m_buffer, uarr);
+}
 
 // Copy constructor
 MyString::MyString(const MyString& mystring) {
-	cout << "inside Copy constructor "<<endl;
-	arr=CopyMyString(arr, mystring.arr);}
+
+	m_length = mystring.m_length;
+	m_buffer = copyMyString(m_buffer, mystring.m_buffer);
+}
 
 // Copy assignment
-MyString MyString:: operator = (const MyString& mystring) {
-cout << "inside Copy assignment " << endl;
-delete [] arr;
-arr = NULL;
-arr=CopyMyString(arr, mystring.arr);
-return *this;
+MyString MyString::operator = (const MyString& mystring) {
+
+	delete[] m_buffer;
+	m_buffer = NULL;
+	m_length = mystring.m_length;
+	m_buffer = copyMyString(m_buffer, mystring.m_buffer);
+	return *this;
 }
 
 //print string operator<<
-std::ostream& operator<< (std::ostream& out, const MyString& mystring)
-{
-out << mystring.arr;
-return out;
+std::ostream& operator << (std::ostream& out,
+	const MyString& mystring) {
+	out << mystring.m_buffer;
+	return out;
 }
 
 
-bool operator== (const MyString& mystring1, const MyString& mystring2) {
-bool result = true;
-int i = 0;
-while (result &&(((mystring1.arr[i]) != '\0') &&(mystring2.arr[i]) != '\0')) {
-if (mystring1.arr[i] > mystring2.arr[i]) {
-	result = false;}
-else if (mystring1.arr[i] < mystring2.arr[i]) {
-	result = false;}
-	i++; }
-if (result && (((mystring1.arr[i]) == '\0') && (mystring2.arr[i]) == '\0'))
-result = true;
-else
-result = false;
-return result;}
+bool operator == (const MyString& mystring1,
+	const MyString& mystring2) {
 
-MyString operator+(const MyString& mystring1, const MyString& mystring2) {//this=mystring1+mystring2
+	if (mystring1.m_length != mystring2.m_length)
+		return false;
+	else {
+		for (int i = 0; i <= mystring1.m_length; i++)
+			if (mystring1.m_buffer != mystring2.m_buffer)
+				return false;
+	}
+	return true;
+}
+
+
+
+MyString operator + (const MyString& mystring1,
+	const MyString& mystring2) { //this=mystring1+mystring2
 	MyString temp;
-size_t i = 0,j=0;
-	while (*(mystring1.arr+i) != '\0')
-		i++;
-	while (*(mystring2.arr + j) != '\0')
-		j++;
-	temp.arr = new char[i + j + 1];
+	size_t i = mystring1.m_length + mystring2.m_length;
+	temp.m_buffer = new char[i + 1];
+	temp.m_length = i;
 	i = 0;
-	while (*(mystring1.arr + i) != '\0'){
-		*(temp.arr+ i) = *(mystring1.arr + i);
-		i++; }//w1
-	i--;
-	j = 0;
-	while ((mystring2.arr[j]) != '\0') {
-		*(temp.arr + i) = mystring2.arr[j];
-		i++;
-		j++;}
-	*(temp.arr + i) = '\0';
-	return temp;}
+	if (mystring1.m_length != 0) {
+		while (*(mystring1.m_buffer + i) != '\0') {
+			*(temp.m_buffer + i) = *(mystring1.m_buffer + i);
+			i++;
+		} //w1
+	}
 
-MyString MyString::operator+=(const MyString& mystring1) {
-char* temp=NULL;
-    temp=CopyMyString(temp,arr);
-	delete[] arr;
-	arr = NULL;
-	arr = new char[lenString(temp) + lenString(mystring1.arr) + 1];
-	int i = 0;
-	while (*(temp + i) !='\0'){
-		*(arr + i) = *(temp + i);
-		i++;}//w1
-	i--;
-	int j = 0;
-	while ((mystring1.arr[j]) != '\0') {
-		*(arr + i) = mystring1.arr[j];
-		i++;
-		j++;     }//w
-	delete[] temp;
-	*(arr + i) = '\0';
-	return *this;}
+	if (mystring2.m_length != 0) {
+		int j = 0;
 
-char  MyString::operator[](int index) {
-char temp = NULL;
-for (int i=0;i<= lenString(arr);i++)
-	if (i== index)
-	temp =  * (arr + i);
-return temp;}
-	 
+		while ((mystring2.m_buffer[j]) != '\0') {
+			*(temp.m_buffer + i) = mystring2.m_buffer[j];
+			i++;
+			j++;
+		}
+	}
+	*(temp.m_buffer + i) = '\0';
+	return temp;
+}
+
+MyString MyString::operator += (const MyString& mystring1) {
+	char* temp = NULL;
+	size_t i = mystring1.m_length + m_length;
+	if (m_length != 0) {
+		temp = copyMyString(temp, m_buffer);
+		delete[] m_buffer;
+		m_buffer = NULL;
+	}
+
+	m_buffer = new char[i + 1];
+	m_length = i;
+	i = 0;
+	if (temp) {
+		while (*(temp + i) != '\0') {
+			*(m_buffer + i) = *(temp + i);
+			i++;
+		} //w1
+		delete[] temp;
+	}
+	if (mystring1.m_length != 0) {
+		int j = 0;
+		while ((mystring1.m_buffer[j]) != '\0') {
+			*(m_buffer + i) = mystring1.m_buffer[j];
+			i++;
+			j++;
+		} //w
+
+	}
+	*(m_buffer + i) = '\0';
+	return *this;
+}
+
+char MyString::operator[](int index) {
+	char temp = NULL;
+	if (index > -1 && index <= m_length)
+		for (int i = 0; i <= m_length; i++)
+			if (i == index)
+				temp = *(m_buffer + i);
+	return temp;
+}
 //Copy My String 
-char *  MyString::CopyMyString(char* destination, const char* source) {
-int i = 0;
-size_t len = lenString(source)+1;
-destination = new char[len];
-while (*(source + i) != '\0'){
-	*(destination + i) = *(source + i);
-	i++;  }//w
-*(destination + i) = '\0';
-return destination; }// e
+char* MyString::copyMyString(char* destination,
+	const char* source) {
+	int i = 0;
+	while (*(source + i) != '\0')
+		i++;
+	size_t len = i + 1;
+	i = 0;
+	destination = new char[len];
+	while (*(source + i) != '\0') {
+		*(destination + i) = *(source + i);
+		i++;
+	} //w
+	*(destination + i) = '\0';
+	return destination;
+} // e
 
- // destructor
-MyString::~MyString() { delete[] arr; }
-	
-	
+//print string
+void MyString::printString() {
+	{
+		int i = 0;
+		if (m_buffer) {
+			while ((m_buffer[i]) != '\0') {
+				std::cout << m_buffer[i];
+				i++;
+			}
+		}
+		else {
+			std::cout << "empty string";
+		}
+	}
+}
 
-
-
-
-
+// destructor
+MyString::~MyString() {
+	delete[] m_buffer;
+}

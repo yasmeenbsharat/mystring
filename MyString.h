@@ -2,7 +2,6 @@
 class MyString {
 
 public:
-	int lenString(const char* uarr);
 
 	MyString(const char* uarr = "");
 
@@ -19,13 +18,16 @@ public:
 	friend MyString operator+(const MyString& mystring1, const MyString& mystring2);
 
 	MyString operator+=(const MyString& mystring1);
-	 // destructor
+
+	void printString();
+
 	~MyString();
-	
+
 private:
-	char* arr;
+	char* m_buffer;
+	int m_length = 0;
 	//Copy My String 
-	char* CopyMyString(char* destination, const char* source);
+	char* copyMyString(char* destination, const char* source);
 };
 
 
