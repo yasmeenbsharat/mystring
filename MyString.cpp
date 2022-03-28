@@ -38,11 +38,13 @@ bool operator == (const MyString& mystring1,
 	if (mystring1.m_length != mystring2.m_length)
 		return false;
 	else {
-		for (int i = 0; i <= mystring1.m_length; i++)
-			if (mystring1.m_buffer != mystring2.m_buffer)
+		for (int i = 0; i < mystring1.m_length; i++) {
+			if (mystring1.m_buffer[i] != mystring2.m_buffer[i])
 				return false;
+		}
 	}
 	return true;
+
 }
 
 
