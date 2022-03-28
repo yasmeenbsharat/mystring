@@ -42,9 +42,8 @@ bool operator == (const MyString& mystring1,
         if (mystring1.m_buffer[i] != mystring2.m_buffer[i])
             return false;
 
-        return true;
-
     }
+    return true;
 }
 
 MyString operator + (const MyString& mystring1,
