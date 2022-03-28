@@ -9,7 +9,7 @@ public:
 
 	MyString operator = (const MyString& mystring);
 
-	char operator[](int index);
+	char operator[](size_t index);
 
 	friend std::ostream& operator<< (std::ostream& out, const MyString& mystring);
 
